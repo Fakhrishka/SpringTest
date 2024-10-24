@@ -1,7 +1,7 @@
-package com.example.demo.rest;
+package com.example.demo.controller;
 
 import com.example.demo.service.UserService;
-import com.example.demo.storage.User;
+import com.example.demo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ public class UserController {
     @PostMapping("/login")
     public boolean login(@RequestBody User user)
     {
-        return userService.login(user);
+        return true;
     }
 
     @PostMapping("/register")

@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.storage.User;
-import com.example.demo.storage.UserRepository;
+import com.example.demo.entity.Job;
+import com.example.demo.entity.User;
+import com.example.demo.entity.Worker;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User findById(int ID) {
+    public User findById(String ID) {
         Optional<User> result = userRepository.findById(ID);
         if(result.isPresent())
             return result.get();
@@ -27,8 +29,9 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User not found");
     }
 
+
     @Override
-    public User findByUserName(String username) {
+    public User findByUsername(String username) {
         Optional<User> result = userRepository.findByUsername(username);
         if(result.isPresent())
             return result.get();
@@ -45,16 +48,10 @@ public class UserServiceImpl implements UserService {
     public boolean login(User user)
     {
         Optional<User> result = userRepository.findByUsername(user.getUsername());
-
         if(result.isPresent())
-        {
             return passwordEncoder.matches(user.password, result.get().password);
-        }
         else
-        {
             throw new RuntimeException("There is NO USER with such Username!");
-        }
-
     }
 
     @Override

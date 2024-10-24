@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.storage.Worker;
+import com.example.demo.entity.Job;
+import com.example.demo.entity.Worker;
 
 import java.util.List;
 
@@ -10,15 +11,21 @@ public interface WorkerService {
 
     List<Worker> findByName(String name);
 
-    Worker findById(int ID);
+    Worker findById(String ID);
 
-    Worker findByNameAndId(String name, int ID);
+//    List<Job> addWorkerJob(Job job);
+
+    List<Job> addWorkerJob(Job job, String workerId);
+
+    Worker findByNameAndId(String name, String ID);
+
+    List<Job> getWorkerJobs(Worker worker);
 
     Worker saveWorker(Worker worker);
 
     Worker updateWorker(Worker worker);
 
-    void delete(int ID);
+    boolean delete(String ID);
 
-
+    boolean isWorkerValid(Worker worker);
 }
