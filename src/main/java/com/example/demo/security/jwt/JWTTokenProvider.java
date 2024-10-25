@@ -1,5 +1,6 @@
 package com.example.demo.security.jwt;
 
+import com.example.demo.exceptions.CustomJwtException;
 import com.example.demo.repository.TokenBlackListRepository;
 import com.example.demo.requests.LoginRequest;
 import io.jsonwebtoken.Claims;
@@ -7,8 +8,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -55,19 +58,22 @@ public class JWTTokenProvider {
     // Here, first we extract all claims from token
     // then we extract require claim based on ClaimsResolver - getSubject or Get Expiration
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-
-        System.out.println(claims);
-        return claimsResolver.apply(claims);
+            final Claims claims = getAllClaimsFromToken(token);
+            return claimsResolver.apply(claims);
     }
 
 
     // Extract all claims from the token
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+        }
+        catch (Exception e) {
+            throw new CustomJwtException("Invalid or malformed JWT token");
+        }
     }
 
 
@@ -86,7 +92,6 @@ public class JWTTokenProvider {
 
     public boolean isTokenBlackListed(String token)
     {
-System.out.println(tokenBlackListRepository.existsByToken(token));
         return tokenBlackListRepository.existsByToken(token);
     }
 

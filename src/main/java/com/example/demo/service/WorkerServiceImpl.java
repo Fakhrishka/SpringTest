@@ -4,6 +4,7 @@ import com.example.demo.entity.Job;
 import com.example.demo.entity.Worker;
 import com.example.demo.repository.WorkerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,16 +13,16 @@ import java.util.Optional;
 @Service
 public class WorkerServiceImpl implements WorkerService
 {
+    private final static String WORKERNOTFOUND = "Worker with such name or ID not found";
+//    private final static String
+
     @Autowired
     private WorkerRepository workerRepository;
 
+//    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<Worker> findAll() {
-        List<Worker> workersList = workerRepository.findAll();
-        if(workersList.isEmpty())
-            throw new RuntimeException("No workers in Database!");
-        else
-            return workersList;
+        return workerRepository.findAll();
     }
 
     // check how to combine above and below methods
@@ -29,7 +30,7 @@ public class WorkerServiceImpl implements WorkerService
     public List<Worker> findByName(String name) {
         List<Worker> workersList = workerRepository.findByName(name);
         if(workersList.isEmpty())
-            throw new RuntimeException("No workers in Database!");
+            throw new IllegalArgumentException(WORKERNOTFOUND);
         else
             return workersList;
     }
@@ -40,7 +41,7 @@ public class WorkerServiceImpl implements WorkerService
         if (result.isPresent())
             return result.get();
         else
-            throw new IllegalArgumentException("Worker under ID:" + ID + " doesn't exists");
+            throw new IllegalArgumentException(WORKERNOTFOUND);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class WorkerServiceImpl implements WorkerService
         if(result.isPresent())
             return worker.getJobs();
         else
-            throw new RuntimeException("No worker in DB");
+            throw new IllegalArgumentException(WORKERNOTFOUND);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class WorkerServiceImpl implements WorkerService
             return jobs;
         }
         else
-            throw new RuntimeException("No Worker found!");
+            throw new IllegalArgumentException(WORKERNOTFOUND);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class WorkerServiceImpl implements WorkerService
         if(this.isWorkerValid(worker))
             return worker;
         else
-            throw new RuntimeException("No Worker with such ID and username");
+            throw new IllegalArgumentException(WORKERNOTFOUND);
         // add exception later
     }
 
@@ -85,7 +86,7 @@ public class WorkerServiceImpl implements WorkerService
         if(this.isWorkerValid(newWorker))
             return newWorker;
         else
-            throw new RuntimeException("Worker not saved");
+            throw new IllegalArgumentException(WORKERNOTFOUND);
 
         //Customs ID implementation below :
 //        int id;
@@ -105,7 +106,7 @@ public class WorkerServiceImpl implements WorkerService
         if(updWorker.isPresent())
             return workerRepository.save(worker);
         else
-            throw new RuntimeException("Worker with ID: "+worker.getId()+" was not found");
+            throw new IllegalArgumentException(WORKERNOTFOUND);
     }
 
     @Override

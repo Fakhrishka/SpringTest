@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class config{
 
     @Autowired
@@ -51,7 +53,6 @@ public class config{
     }
 
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -69,23 +70,13 @@ public class config{
                 );
 
                 http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/register").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         .anyRequest().authenticated()// Allow all requests by default
                 );
 
+                http.authenticationProvider(daoAuthenticationProvider());
                 http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter before the default authentication filter
 
                 return http.build();  // Build the SecurityFilterChain
     }
-
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf().disable()  // Disable CSRF protection if not needed
-//                .authorizeRequests()
-//                .anyRequest().permitAll();  // Allow all requests without authentication
-//
-//        return http.build();  // Return the built security filter chain
-//    }
 }

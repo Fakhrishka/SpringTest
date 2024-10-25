@@ -12,17 +12,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/login")
-    public boolean login(@RequestBody User user)
-    {
-        return true;
-    }
-
-    @PostMapping("/register")
-    public User register(@RequestBody User user)
-    {
-        return userService.register(user);
-    }
-
+//    @PostMapping("/login")
+//    public boolean login(@RequestBody User user)
+//    {
+//        return true;
+//    }
+//
+//    @PostMapping("/register")
+//    public User register(@RequestBody User user)
+//    {
+//        return userService.register(user);
+//    }
+//
 
 }

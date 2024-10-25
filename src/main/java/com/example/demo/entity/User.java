@@ -8,7 +8,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,8 +25,11 @@ public class User {
 
     public String username;
     public String password;
+    @Getter
+    @DBRef
+    public List<Role> roles;
 
-//    public User(){}
+    //    public User(){}
 //
 //    public User(String username, String password) {
 //        this.username = username;

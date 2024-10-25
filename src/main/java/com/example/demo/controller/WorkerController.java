@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +20,14 @@ public class WorkerController {
     private WorkerService workerService;
 
     // GET Requests :
+
+//    @PreAuthorize("hasRole('ADMIN')") == @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/worker")
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(workerService.findAll());
+
     }
 
 
@@ -29,7 +35,6 @@ public class WorkerController {
     public ResponseEntity<?> findById(@PathVariable String workerId) {
         return ResponseEntity.ok(workerService.findById(workerId));
     }
-
 
     @GetMapping("/worker/findbynameandid/{workerName}&{workerID}")
     public ResponseEntity<?> findByNameAndId(@PathVariable String workerName, @PathVariable String workerID) {
